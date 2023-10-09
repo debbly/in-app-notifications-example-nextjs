@@ -12,12 +12,12 @@ export default async function handler(req, res) {
       .json({ error: `${req.method} method is not accepted.` });
   }
 
-  const { message, showToast, userId, tenant } = req.body;
+  const { message, showToast, userId, email, tenant } = req.body;
 
   try {
     await knockClient.workflows.trigger(KNOCK_WORKFLOW, {
-      recipients: [userId],
-      actor: userId,
+      recipients: [ { id: userId, email }],
+      actor: { id: userId, email },
       tenant: tenant,
       data: {
         message,

@@ -3,7 +3,7 @@ import {
   Checkbox,
   FormControl,
   FormLabel,
-  Heading,
+  Input,
   Textarea,
 } from "@chakra-ui/react";
 import { useState } from "react";
@@ -11,13 +11,14 @@ import { notify } from "../lib/api";
 
 const SendNotificationForm = ({ userId, tenant }) => {
   const [message, setMessage] = useState("");
+  const [email, setEmail] = useState("");
   const [showToast, setShowToast] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    await notify({ message, showToast, userId, tenant });
+    await notify({ message, showToast, userId, email, tenant });
     setIsLoading(false);
 
     e.target.reset();
@@ -25,6 +26,12 @@ const SendNotificationForm = ({ userId, tenant }) => {
 
   return (
     <form onSubmit={onSubmit}>
+       <FormControl mb={3}>
+        <FormLabel htmlFor="email" fontSize={14}>
+          Email
+        </FormLabel>
+        <Input type='email' placeholder="Email to be sent the notification" onChange={(e) => setEmail(e.target.value)} />
+      </FormControl>
       <FormControl mb={3}>
         <FormLabel htmlFor="message" fontSize={14}>
           Message
@@ -55,7 +62,7 @@ const SendNotificationForm = ({ userId, tenant }) => {
         variant="solid"
         colorScheme="gray"
         size="sm"
-        isDisabled={message === ""}
+        isDisabled={message && email === ""}
         isLoading={isLoading}
       >
         Send notification
